@@ -102,19 +102,33 @@ const certifications = [
 
 function renderStaticLists() {
   const certificateIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3 4.5 6v5c0 4.7 3.1 8.4 7.5 10 4.4-1.6 7.5-5.3 7.5-10V6L12 3Z"/><path d="m8.8 12 2.1 2.1 4.4-4.5"/></svg>';
-  document.getElementById('tech-stack').innerHTML = stack.map((item) => `<span class="tech-tag">${item}</span>`).join('');
-  document.getElementById('certifications').innerHTML = certifications.map(([name, date]) => `<article class="certification"><span class="certificate-icon">${certificateIcon}</span><h4>${name}</h4><time datetime="${new Date(date).toISOString().slice(0, 10)}">${date}</time></article>`).join('');
+  const techStackEl = document.getElementById('tech-stack');
+  if (techStackEl) {
+    techStackEl.innerHTML = stack.map((item) => `<span class="tech-tag">${item}</span>`).join('');
+  }
+  const certsEl = document.getElementById('certifications');
+  if (certsEl) {
+    certsEl.innerHTML = certifications.map(([name, date]) => `<article class="certification"><span class="certificate-icon">${certificateIcon}</span><h4>${name}</h4><time datetime="${new Date(date).toISOString().slice(0, 10)}">${date}</time></article>`).join('');
+  }
 }
 
 function setLanguage(language) {
   const copy = translations[language];
   document.documentElement.lang = language;
-  document.querySelectorAll('[data-i18n]').forEach((element) => { const key = element.dataset.i18n; if (copy[key]) element.textContent = copy[key]; });
+  document.querySelectorAll('[data-i18n]').forEach((element) => { 
+    const key = element.dataset.i18n; 
+    if (copy[key]) element.textContent = copy[key]; 
+  });
+  
   const toggle = document.getElementById('language-toggle');
-  toggle.textContent = language === 'en' ? 'UA' : 'EN';
-  toggle.setAttribute('aria-label', language === 'en' ? 'Switch to Ukrainian' : 'Перемкнути на англійську');
-  toggle.setAttribute('aria-pressed', String(language === 'uk'));
+  if (toggle) {
+    toggle.textContent = language === 'en' ? 'UA' : 'EN';
+    toggle.setAttribute('aria-label', language === 'en' ? 'Switch to Ukrainian' : 'Перемкнути на англійську');
+    toggle.setAttribute('aria-pressed', String(language === 'uk'));
+  }
+  
   localStorage.setItem('portfolio-language', language);
+  
   const terminalOutput = document.getElementById('terminal-output');
   if (terminalOutput?.dataset.started === 'true') {
     terminalOutput.textContent = '';
@@ -124,15 +138,29 @@ function setLanguage(language) {
 }
 
 async function copyEmail() {
-  const button = document.getElementById('email-copy'); const status = document.getElementById('copy-status'); const language = document.documentElement.lang;
-  try { await navigator.clipboard.writeText(button.dataset.email); status.textContent = translations[language].copied; }
-  catch { const selection = window.getSelection(); const range = document.createRange(); range.selectNodeContents(button); selection.removeAllRanges(); selection.addRange(range); status.textContent = translations[language].copyFailed; }
+  const button = document.getElementById('email-copy'); 
+  const status = document.getElementById('copy-status'); 
+  if (!button || !status) return;
+  
+  const language = document.documentElement.lang;
+  try { 
+    await navigator.clipboard.writeText(button.dataset.email); 
+    status.textContent = translations[language].copied; 
+  } catch { 
+    const selection = window.getSelection(); 
+    const range = document.createRange(); 
+    range.selectNodeContents(button); 
+    selection.removeAllRanges(); 
+    selection.addRange(range); 
+    status.textContent = translations[language].copyFailed; 
+  }
   window.setTimeout(() => { status.textContent = ''; }, 2600);
 }
 
 function startTerminal() {
   const output = document.getElementById('terminal-output');
   if (!output || output.dataset.started === 'true') return;
+  
   output.dataset.started = 'true';
   const copy = translations[document.documentElement.lang];
   const lines = [
@@ -142,6 +170,7 @@ function startTerminal() {
     `<span class="terminal-prompt">maksym@portfolio</span><span class="terminal-subtle">:~$</span> ${copy.terminalCommand}`,
     `<span class="terminal-cursor"></span><span data-i18n="terminalResponse">${copy.terminalResponse}</span>`
   ];
+  
   lines.forEach((line, index) => window.setTimeout(() => {
     const element = document.createElement('p');
     element.className = 'terminal-line';
@@ -157,32 +186,41 @@ document.addEventListener('DOMContentLoaded', () => {
   const stored = localStorage.getItem('portfolio-language'); 
   setLanguage(stored === 'uk' ? 'uk' : 'en');
   
-  document.getElementById('language-toggle').addEventListener('click', () => {
-    setLanguage(document.documentElement.lang === 'en' ? 'uk' : 'en');
-  });
+  const langToggle = document.getElementById('language-toggle');
+  if (langToggle) {
+    langToggle.addEventListener('click', () => {
+      setLanguage(document.documentElement.lang === 'en' ? 'uk' : 'en');
+    });
+  }
   
-  document.getElementById('email-copy').addEventListener('click', copyEmail);
-  document.getElementById('year').textContent = new Date().getFullYear();
+  const emailBtn = document.getElementById('email-copy');
+  if (emailBtn) emailBtn.addEventListener('click', copyEmail);
+  
+  const yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
   
   const menu = document.getElementById('mobile-menu'); 
   const menuToggle = document.getElementById('menu-toggle');
   
-  menuToggle.addEventListener('click', () => { 
-    const open = menu.classList.toggle('hidden') === false; 
-    menuToggle.setAttribute('aria-expanded', String(open)); 
-    menuToggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation'); 
-  });
-  
-  menu.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', () => { 
-      menu.classList.add('hidden'); 
-      menuToggle.setAttribute('aria-expanded', 'false'); 
+  if (menu && menuToggle) {
+    menuToggle.addEventListener('click', () => { 
+      const open = menu.classList.toggle('hidden') === false; 
+      menuToggle.setAttribute('aria-expanded', String(open)); 
+      menuToggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation'); 
     });
-  });
+    
+    menu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => { 
+        menu.classList.add('hidden'); 
+        menuToggle.setAttribute('aria-expanded', 'false'); 
+      });
+    });
+  }
   
   document.querySelectorAll('.faq-question').forEach((button) => {
     button.addEventListener('click', () => {
       const answer = document.getElementById(button.getAttribute('aria-controls'));
+      if (!answer) return;
       const isOpen = button.getAttribute('aria-expanded') === 'true';
       button.setAttribute('aria-expanded', String(!isOpen));
       answer.hidden = isOpen;
@@ -190,25 +228,29 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   const backToTop = document.getElementById('back-to-top');
-  window.addEventListener('scroll', () => {
-    backToTop.classList.toggle('is-visible', window.scrollY > 500);
-  }, { passive: true });
-  
-  backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  if (backToTop) {
+    window.addEventListener('scroll', () => {
+      backToTop.classList.toggle('is-visible', window.scrollY > 500);
+    }, { passive: true });
+    
+    backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  }
   
   const contact = document.getElementById('contact');
-  if ('IntersectionObserver' in window) {
-    const terminalObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) { 
-          startTerminal(); 
-          terminalObserver.unobserve(entry.target); 
-        }
-      });
-    }, { threshold: .25 });
-    terminalObserver.observe(contact);
-  } else {
-    startTerminal();
+  if (contact) {
+    if ('IntersectionObserver' in window) {
+      const terminalObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) { 
+            startTerminal(); 
+            terminalObserver.unobserve(entry.target); 
+          }
+        });
+      }, { threshold: .25 });
+      terminalObserver.observe(contact);
+    } else {
+      startTerminal();
+    }
   }
 
   const apiBtn = document.getElementById('api-request-button');
