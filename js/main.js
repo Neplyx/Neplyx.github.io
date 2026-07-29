@@ -66,7 +66,7 @@ const translations = {
     architectureLabel: 'АРХІТЕКТУРА СИСТЕМИ', architectureTitle: 'Потік даних Expense Calculator Bot.', architectureText: 'Невелика, сфокусована система: бот поєднує користувацькі повідомлення, фінансові дані та AI-категоризацію.',
     architectureTelegram: 'Повідомлення користувача', architectureService: 'Асинхронний сервісний шар', architectureDatabase: 'Транзакції та цілі', architectureAi: 'Інсайти й категорії',
     showcaseLabel: 'Приклад коду', showcaseTitle: 'Асинхронність за задумом.',
-    apiLabel: 'Mock API endpoint', apiTitle: 'Запитайте портфоліо напряму.', apiRequest: 'Надіслати запит', apiRequesting: 'Запит виконується…', apiResponseLabel: 'Відповідь', apiPlaceholder: 'Натисніть «Надіслати запит», щоб звернутися до endpoint.', apiStatusReady: '200 OK',
+    apiLabel: 'Mock API endpoint', apiTitle: 'Виконайте тестовий API-запит.', apiRequest: 'Надіслати запит', apiRequesting: 'Запит виконується…', apiResponseLabel: 'Відповідь', apiPlaceholder: 'Натисніть «Надіслати запит», щоб звернутися до endpoint.', apiStatusReady: '200 OK',
     apiJsonStatus: 'доступний', apiJsonAvailability: 'Відкритий до фрілансу та full-time ролей', apiJsonSkills: 'Python, FastAPI, PostgreSQL, Docker, AI-інтеграції',
     approachLabel: 'Мій підхід', approachTitle: 'Від першого питання до надійного результату.',
     analyzeTitle: 'Аналіз і архітектура', analyzeText: 'Глибоко зрозуміти бізнес-задачу до написання коду.',
