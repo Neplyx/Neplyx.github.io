@@ -281,8 +281,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const formattedJson = JSON.stringify(jsonData, null, 2)
-          .replace(/"(.*?)":/g, '<span class="py-keyword">"$1"</span>:') 
-          .replace(/"(.*?)"(?=[,\n}])/g, '<span class="py-string">"$1"</span>'); 
+          .replace(/"(.*?)":/g, "<span class='py-keyword'>\"$1\"</span>:") 
+          .replace(/"(.*?)"(?=[,\n}])/g, "<span class='py-string'>\"$1\"</span>");
 
         apiResponse.innerHTML = formattedJson;
       }, 1200);
